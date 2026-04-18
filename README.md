@@ -1,137 +1,181 @@
-# VISUALISASI TRAFFIC DENGAN OPENGL
+# ModernGL Traffic Scene
 
-## CARA MENJALANKAN PROGRAM ?
+A 3D interactive traffic simulation built with **ModernGL** and **Pygame** for a Computer Graphics final exam (Ujian Akhir Semester — Mata Kuliah Grafika Komputer).
 
-#### <span style="color: yellow;">CLONE REPOSITORY</span>
-<pre>
-    <code>git clone https://github.com/unormiesable/OpenGL_Traffic.git</code>
-    <code>cd OpenGL_Traffic</code>
-</pre>
+> Forked from [unormiesable/OpenGL_Traffic](https://github.com/unormiesable/OpenGL_Traffic)
 
-#### <span style="color: yellow;">PYTHON VIRTUAL ENVIRONMENT</span>
-###### <span style="color: green;">WINDOWS</span> :
+---
 
-<pre>
-    <code>python -m venv virtual</code>
-    <code>virtual\Scripts\activate</code>
-</pre>
+## Features
 
-###### <span style="color: green;">LINUX</span> :
-<pre>
-    <code>python -m venv virtual</code>
-    <code>source virtual/bin/activate</code>
-</pre>
+- Real-time 3D traffic scene rendered with ModernGL (OpenGL 3.3+)
+- Two camera modes: **Fly** and **Orbit**
+- Dynamic car spawning and removal per lane (up to 4 lanes)
+- Adjustable traffic light timing
+- GLSL shader pipeline with texture and point light support
+- OBJ model loading via PyWavefront
 
-#### <span style="color: yellow;">INSTALL DEPENDENCIES</span>
-<pre>
-    <code>pip install -r requirements.txt</code>
-</pre>
+---
 
-#### <span style="color: yellow;">JALANKAN PROGRAM</span>
-<pre>
-    <code>python main.py</code>
-</pre>
+## Project Structure
 
-## CARA MENGGUNAKAN ?
+```
+ModernGL-traffic-scene/
+├── main.py               # Entry point — window, event loop
+├── scene.py              # Scene graph and object management
+├── scene_renderer.py     # Render loop and draw calls
+├── camera.py             # Fly & orbit camera logic
+├── model.py              # Single model loader/renderer
+├── comp_model.py         # Composite model (multi-mesh)
+├── mesh.py               # Mesh data abstraction
+├── vbo.py                # Vertex Buffer Object helpers
+├── vao.py                # Vertex Array Object helpers
+├── shader_program.py     # GLSL shader compilation & linking
+├── texture.py            # Texture loading
+├── point_light.py        # Point light uniforms
+├── shaders/              # GLSL vertex & fragment shaders
+├── objects/              # OBJ 3D model files
+├── textures/             # Texture image files
+└── images/               # Screenshots / assets
+```
 
-#### **MENAMPILKAN CURSOR**
-* Secara default cursor akan **hidden**, namun pada situasi tertentu cursor diperlukan untuk mengakses hal lain diluar program tanpa menghentikan program
-<pre>
-* ` (BACKQUOTE)         =       TOGGLE CURSOR
-</pre>
+---
 
-#### <span style="color: orange;">KONTROL KAMERA</span>
+## Requirements
 
-<pre>
-* TAB                   =       GANTI MODE KAMERA
-</pre>
+| Package     | Version                        |
+| ----------- | ------------------------------ |
+| Python      | ≥ 3.11 (see `.python-version`) |
+| moderngl    | 5.12.0                         |
+| glcontext   | 3.0.0                          |
+| pygame      | 2.6.1                          |
+| numpy       | 2.2.5                          |
+| pyglm       | 2.8.0                          |
+| PyWavefront | 1.3.3                          |
 
-###### **FLY MODE (DEFAULT)**
-<pre>
-* W                     =       MAJU
-* A                     =       GERAK KE KIRI
-* D                     =       GERAK KE KANAN
-* S                     =       MUNDUR
-* Q                     =       GERAK KE BAWAH
-* E                     =       GERAK KE ATAS
-* MOUSE                 =       MENGUBAH ARAH PANDANG
-* SHIFT                 =       BERGERAK LEBIH CEPAT
-* CTRL                  =       BERGERAK LEBIH LAMBAT
-</pre>
+---
 
-* Pergerakan kamera akan bergerak dengan koordinat lokal
+## Getting Started
 
-###### **ORBIT MODE**
-<pre>
-* ↑ (PANAH ATAS)        =       MENGORBIT KE ATAS
-* ← (PANAH KIRI)        =       MENGORBIT KE KIRI
-* → (PANAH KANAN)       =       MENGORBIT KE KANAN
-* ↓ (PANAH BAWAH)       =       MENGORBIT KE BAWAH
-* MOUSE                 =       MENGORBIT SESUAI DENGAN ARAH MOUSE
-* SHIFT                 =       BERGERAK LEBIH CEPAT
-* CTRL                  =       BERGERAK LEBIH LAMBAT
-</pre>
+### 1. Clone the repository
 
-#### <span style="color: orange;">PENGATURAN SCENE</span>
-* Pada scene default disediakan **4 mobil** untuk setiap lane
+```bash
+git clone https://github.com/severusDude/ModernGL-traffic-scene.git
+cd ModernGL-traffic-scene
+```
 
-###### **SPAWN MOBIL**
-<pre>
-* 1                     =       MENAMBAH MOBIL PADA LANE 1
-* 2                     =       MENAMBAH MOBIL PADA LANE 2
-* 3                     =       MENAMBAH MOBIL PADA LANE 3
-* 4                     =       MENAMBAH MOBIL PADA LANE 4
-</pre>
+### 2. Create a virtual environment
 
-###### **DELETE MOBIL**
-<pre>
-* 6                     =       MENGHAPUS MOBIL PADA LANE 1
-* 7                     =       MENGHAPUS MOBIL PADA LANE 2
-* 8                     =       MENGHAPUS MOBIL PADA LANE 3
-* 9                     =       MENGHAPUS MOBIL PADA LANE 4
-</pre>
-* Jumlah mobil minimum adalah **4** untuk setiap lane
-* Jumlah mobil maksimum adalah **7** untuk setiap lane
+**Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
 
-###### **MENGATUR WAKTU TRAFFIC LIGHT**
-* Waktu tunggu default adalah 2 satuan
-<pre>
-* F                     =       MENGURANGI WAKTU TUNGGU
-* G                     =       MENAMBAH WAKTU TUNGGU
-</pre>
-* Waktu tunggu minimal adalah 0.5 satuan
-* Waktu tunggu maksimal adalah 5 satuan
+**Linux / macOS:**
+```bash
+python -m venv venv
+source venv/bin/activate
+```
 
-<!-- ## **KAMUS DASAR OPENGL**
+> Alternatively, if you use [uv](https://github.com/astral-sh/uv), a `uv.lock` is already included:
+> ```bash
+> uv sync
+> ```
 
-### <span style="color: green;">VBO (Vertex Buffer Object)</span>
-* Vertex Coordinate
-* Color Data
-* Texture Coordinate
-* Normal Vector
-* (Dan beberapa data lain misalnya seperti "Weight" pada vertex)
+### 3. Install dependencies
 
-**Main** : Hold data raw di GPU
+```bash
+pip install -r requirements.txt
+```
 
-### <span style="color: green;">VAO (Vertex Array Object)</span>
-* Referensi/Penunjuk ke VBO yang digunakan
-* Layout Attr Vertex
-* Binding State
+### 4. Run the program
 
-**Main** : Cara baca VBO
+```bash
+python main.py
+```
 
-### <span style="color: green;">FBO (Frame Buffer)</span>
-* Texture and Color Buffer (sebagai output image)
-* Depth Buffer (z-testing)
-* Stencil buffer DKK
+---
 
-**Main** : Konfigurasi render target (Selain layar utama)
+## Controls
 
-### <span style="color: green;">GBUFFER (Geometry Buffer)</span>
-* Position
-* Normal
-* Albedo
-* Specular
-* Depth
+### General
 
-**Main** : Sekumpulan texture dalam FBO untuk deferred shading (Menyimpan data per pixel) -->
+| Key                 | Action                           |
+| ------------------- | -------------------------------- |
+| `` ` `` (Backquote) | Toggle cursor visibility         |
+| `TAB`               | Switch camera mode (Fly ↔ Orbit) |
+
+### Camera — Fly Mode *(default)*
+
+| Key / Input | Action        |
+| ----------- | ------------- |
+| `W`         | Move forward  |
+| `S`         | Move backward |
+| `A`         | Strafe left   |
+| `D`         | Strafe right  |
+| `Q`         | Move down     |
+| `E`         | Move up       |
+| Mouse       | Look around   |
+| `SHIFT`     | Move faster   |
+| `CTRL`      | Move slower   |
+
+> Movement is relative to the camera's local coordinate system.
+
+### Camera — Orbit Mode
+
+| Key / Input | Action                   |
+| ----------- | ------------------------ |
+| `↑`         | Orbit up                 |
+| `↓`         | Orbit down               |
+| `←`         | Orbit left               |
+| `→`         | Orbit right              |
+| Mouse       | Orbit in mouse direction |
+| `SHIFT`     | Orbit faster             |
+| `CTRL`      | Orbit slower             |
+
+### Scene — Spawn Cars
+
+| Key | Action            |
+| --- | ----------------- |
+| `1` | Add car to Lane 1 |
+| `2` | Add car to Lane 2 |
+| `3` | Add car to Lane 3 |
+| `4` | Add car to Lane 4 |
+
+### Scene — Remove Cars
+
+| Key | Action                 |
+| --- | ---------------------- |
+| `6` | Remove car from Lane 1 |
+| `7` | Remove car from Lane 2 |
+| `8` | Remove car from Lane 3 |
+| `9` | Remove car from Lane 4 |
+
+> Each lane starts with **4 cars** (minimum: 4, maximum: 7).
+
+### Traffic Light Timing
+
+| Key | Action             |
+| --- | ------------------ |
+| `F` | Decrease wait time |
+| `G` | Increase wait time |
+
+> Default wait time: **2 units** — range: **0.5 – 5 units**.
+
+---
+
+## Tech Stack
+
+- **[ModernGL](https://moderngl.readthedocs.io/)** — Python OpenGL wrapper
+- **[Pygame](https://www.pygame.org/)** — Window management & input handling
+- **[PyGLM](https://github.com/Zuzu-Typ/PyGLM)** — OpenGL mathematics (vectors, matrices)
+- **[NumPy](https://numpy.org/)** — Array / buffer operations
+- **[PyWavefront](https://github.com/greenmoss/PyWavefront)** — OBJ model loading
+- **GLSL** — Vertex and fragment shaders
+
+---
+
+## License
+
+This project is for academic purposes. See the upstream repository [unormiesable/OpenGL_Traffic](https://github.com/unormiesable/OpenGL_Traffic) for the original license.
